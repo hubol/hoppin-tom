@@ -11,6 +11,6 @@ async function initialize()
     await Promise.all([loadFontsAsync(), loadTexturesAsync(), loadHowlsAsync(howls)]);
     require("./utils/arrayExtensions");
     require("./utils/pixiExtensions");
-    require("./igua/game").startGame();
+    require("./tom/game").startGame();
 }
 window.onload = initialize;
