@@ -1,12 +1,19 @@
 import {startApplication} from "../utils/pixiUtils";
 import {Container, DisplayObject, Ticker} from "pixi.js";
 import {IguaTicker} from "../utils/iguaTicker";
+import {theStory} from "../scenes/theStory";
 
 export let game: Game;
 
 export function startGame()
 {
-    const application = startApplication({ width: 256, height: 256, targetFps: 60 });
+    game = createGame();
+    game.goto(theStory);
+}
+
+function createGame(): Game
+{
+    const application = startApplication({ width: 128, height: 128, targetFps: 60 });
     application.ticker = new IguaTicker();
     application.ticker.autoStart = true;
 
@@ -14,11 +21,11 @@ export function startGame()
     const hudStage = new Container();
     application.stage.addChild(stage, hudStage);
 
-    game = {
+    const game = {
         hudStage,
         stage,
         get ticker() {
-          return application.ticker;
+            return application.ticker;
         },
         camera: createCamera(application.stage),
         get backgroundColor() {
@@ -32,8 +39,19 @@ export function startGame()
         },
         get height() {
             return application.renderer.height;
+        },
+        goto(scene: () => void) {
+            stage.removeChildren();
+            stage.visible = true;
+            hudStage.visible = true;
+            game.camera.x = 0;
+            game.camera.y = 0;
+            game.backgroundColor = 0x333333;
+            scene();
         }
     };
+
+    return game;
 }
 
 function createCamera(displayObject: DisplayObject)
@@ -63,6 +81,7 @@ interface Game
     backgroundColor: number;
     width: number;
     height: number;
+    goto(scene: () => void);
 }
 
 interface Camera
