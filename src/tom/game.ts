@@ -2,20 +2,21 @@ import {startApplication} from "../utils/pixiUtils";
 import {Container, DisplayObject, Ticker} from "pixi.js";
 import {IguaTicker} from "../utils/iguaTicker";
 import {theStory} from "../scenes/theStory";
+import {worldMap} from "../scenes/worldMap";
 
 export let game: Game;
 
 export function startGame()
 {
     game = createGame();
-    game.goto(theStory);
+    game.goto(worldMap);
 }
 
 function createGame(): Game
 {
     const application = startApplication({ width: 128, height: 128, targetFps: 60 });
     application.ticker = new IguaTicker();
-    application.ticker.autoStart = true;
+    application.ticker.start();
 
     const stage = new Container();
     const hudStage = new Container();

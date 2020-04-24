@@ -3,6 +3,7 @@ import { TilingSprite, Text } from "pixi.js";
 import {Stars} from "../textures";
 import {SerifFont} from "../fonts";
 import {EscapeTickerAndExecute} from "../utils/iguaTicker";
+import {worldMap} from "./worldMap";
 
 export function theStory()
 {
@@ -19,7 +20,7 @@ export function theStory()
         .withStep(() => {
             text.y -= 0.2;
             if (text.y + text.height < 0)
-                throw new EscapeTickerAndExecute(() => game.goto(() => {}));
+                throw new EscapeTickerAndExecute(() => game.goto(worldMap));
         });
     text.y = game.height;
     game.stage.addChild(text);
