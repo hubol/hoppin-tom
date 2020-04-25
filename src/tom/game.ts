@@ -9,6 +9,7 @@ export let game: Game;
 export function startGame()
 {
     game = createGame();
+    // game.goto(theStory);
     game.goto(worldMap);
 }
 
