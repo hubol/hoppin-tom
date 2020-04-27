@@ -4,9 +4,12 @@ import {MapBackground, MapTom, MapWoodedArea} from "../textures";
 import { DropShadowFilter } from "@pixi/filter-drop-shadow";
 import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
+import {playMusicAsync} from "../music";
+import {Overworld} from "../musics";
 
 export function worldMap()
 {
+    playMusicAsync(Overworld);
     game.stage.addChild(Sprite.from(MapBackground));
     const container = new Container();
     const dropShadowFilter = new DropShadowFilter({ distance: 3, alpha: 0.5, quality: 3, blur: 1 });

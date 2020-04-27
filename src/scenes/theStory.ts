@@ -4,9 +4,12 @@ import {Stars} from "../textures";
 import {SerifFont} from "../fonts";
 import {EscapeTickerAndExecute} from "../utils/iguaTicker";
 import {worldMap} from "./worldMap";
+import {playMusicAsync} from "../music";
+import {Intro} from "../musics";
 
 export function theStory()
 {
+    playMusicAsync(Intro);
     game.hudStage.visible = false;
     game.stage.addChild(new TilingSprite(Stars, game.width, game.height));
     const text = new Text( "Ah... The six wooded areas... Most who visit even one of them never returns... There are many goblins and eveil elves there... You wish to see the willow? Then I guess you will have to brave this challenge, Hoppin Tom...",
