@@ -13,4 +13,9 @@ async function initialize()
     require("./utils/pixiExtensions");
     require("./tom/game").startGame();
 }
-window.onload = initialize;
+
+const beginButtonElement = document.getElementById("begin");
+beginButtonElement.onclick = async () => {
+    beginButtonElement.remove();
+    await initialize();
+};
