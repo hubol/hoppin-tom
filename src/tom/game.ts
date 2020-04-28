@@ -42,14 +42,19 @@ function createGame(): Game
         get height() {
             return application.renderer.height;
         },
-        goto(scene: () => void) {
+        goto(scene: Scene) {
             stage.removeChildren();
             stage.visible = true;
             hudStage.visible = true;
             game.camera.x = 0;
             game.camera.y = 0;
             game.backgroundColor = 0x333333;
-            scene();
+            const sceneResult = scene();
+            if (sceneResult instanceof Promise)
+            {
+                application.ticker.stop();
+                sceneResult.then(() => application.ticker.start());
+            }
         }
     };
 
@@ -74,6 +79,8 @@ function createCamera(displayObject: DisplayObject)
     };
 }
 
+type Scene = () => void | Promise<void>;
+
 interface Game
 {
     hudStage: Container;
@@ -83,7 +90,7 @@ interface Game
     backgroundColor: number;
     width: number;
     height: number;
-    goto(scene: () => void);
+    goto(scene: Scene);
 }
 
 interface Camera

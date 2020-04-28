@@ -7,12 +7,12 @@ import {approachLinear} from "../utils/math";
 import {playMusicAsync} from "../playMusic";
 import {Overworld} from "../musics";
 
-export function worldMap()
+export async function worldMap()
 {
-    playMusicAsync(Overworld);
+    await playMusicAsync(Overworld);
     game.stage.addChild(Sprite.from(MapBackground));
     const container = new Container();
-    const dropShadowFilter = new DropShadowFilter({ distance: 3, alpha: 0.5, quality: 3, blur: 1 });
+    const dropShadowFilter = new DropShadowFilter({distance: 3, alpha: 0.5, quality: 3, blur: 1});
     container.filters = [dropShadowFilter];
 
     const woodedAreas = [
