@@ -4,7 +4,7 @@ import {MapBackground, MapTom, MapWoodedArea} from "../textures";
 import { DropShadowFilter } from "@pixi/filter-drop-shadow";
 import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
-import {playMusicAsync} from "../music";
+import {playMusicAsync} from "../playMusic";
 import {Overworld} from "../musics";
 
 export function worldMap()

@@ -4,7 +4,7 @@ import {Stars} from "../textures";
 import {SerifFont} from "../fonts";
 import {EscapeTickerAndExecute} from "../utils/iguaTicker";
 import {worldMap} from "./worldMap";
-import {playMusicAsync} from "../music";
+import {playMusicAsync} from "../playMusic";
 import {Intro} from "../musics";
 
 export function theStory()
