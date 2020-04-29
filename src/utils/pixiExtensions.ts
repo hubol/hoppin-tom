@@ -13,6 +13,10 @@ declare global {
             rectangle: Rectangle;
             withStep(step: () => void): this;
         }
+
+        export interface Container {
+            removeAllChildren();
+        }
     }
 }
 
@@ -27,6 +31,16 @@ PIXI.DisplayObject.prototype.withStep = function(step)
     return this
         .on("added", () => game.ticker.add(step))
         .on("removed", () => game.ticker.remove(step));
+}
+
+PIXI.Container.prototype.removeAllChildren = function ()
+{
+    this.children.forEach(x => {
+        if (x instanceof PIXI.Container)
+            x.removeAllChildren();
+
+        x.destroy();
+    });
 }
 
 // Move this Container by the given speed without touching any of the specified container(s). If a collision did not occur, the supplied speed will be modified with the remainder. Otherwise, the speed will have a length of 0.

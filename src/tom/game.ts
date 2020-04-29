@@ -43,7 +43,7 @@ function createGame(): Game
             return application.renderer.height;
         },
         goto(scene: Scene) {
-            stage.removeChildren();
+            stage.removeAllChildren();
             stage.visible = true;
             hudStage.visible = true;
             game.camera.x = 0;
