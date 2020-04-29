@@ -1,6 +1,6 @@
 import {startApplication} from "../utils/pixiUtils";
 import {Container, DisplayObject, Ticker} from "pixi.js";
-import {IguaTicker} from "../utils/iguaTicker";
+import {EscapeTickerAndExecute, IguaTicker} from "../utils/iguaTicker";
 import {theStory} from "../scenes/theStory";
 import {worldMap} from "../scenes/worldMap";
 
@@ -9,8 +9,8 @@ export let game: Game;
 export function startGame()
 {
     game = createGame();
-    game.goto(theStory);
-    // game.goto(worldMap);
+    game.goto(theStory, { escapeTicker: false });
+    // game.goto(worldMap, { escapeTicker: false });
 }
 
 function createGame(): Game
@@ -22,6 +22,22 @@ function createGame(): Game
     const stage = new Container();
     const hudStage = new Container();
     application.stage.addChild(stage, hudStage);
+
+    const gotoImpl = (scene: Scene) =>
+    {
+        stage.removeAllChildren();
+        stage.visible = true;
+        hudStage.visible = true;
+        game.camera.x = 0;
+        game.camera.y = 0;
+        game.backgroundColor = 0x333333;
+        const sceneResult = scene();
+        if (sceneResult instanceof Promise)
+        {
+            application.ticker.stop();
+            sceneResult.then(() => application.ticker.start());
+        }
+    };
 
     const game = {
         hudStage,
@@ -42,19 +58,11 @@ function createGame(): Game
         get height() {
             return application.renderer.height;
         },
-        goto(scene: Scene) {
-            stage.removeAllChildren();
-            stage.visible = true;
-            hudStage.visible = true;
-            game.camera.x = 0;
-            game.camera.y = 0;
-            game.backgroundColor = 0x333333;
-            const sceneResult = scene();
-            if (sceneResult instanceof Promise)
-            {
-                application.ticker.stop();
-                sceneResult.then(() => application.ticker.start());
-            }
+        goto(scene: Scene, gotoOptions?: GotoOptions) {
+            if (gotoOptions?.escapeTicker ?? true)
+                throw new EscapeTickerAndExecute(() => gotoImpl(scene));
+            else
+                gotoImpl(scene);
         }
     };
 
@@ -79,6 +87,11 @@ function createCamera(displayObject: DisplayObject)
     };
 }
 
+interface GotoOptions
+{
+    escapeTicker?: boolean;
+}
+
 type Scene = () => void | Promise<void>;
 
 interface Game
@@ -90,7 +103,7 @@ interface Game
     backgroundColor: number;
     width: number;
     height: number;
-    goto(scene: Scene);
+    goto(scene: Scene, gotoOptions?: GotoOptions);
 }
 
 interface Camera

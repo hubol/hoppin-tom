@@ -6,7 +6,6 @@ import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
 import {playMusicAsync} from "../playMusic";
 import {Overworld} from "../musics";
-import {EscapeTickerAndExecute} from "../utils/iguaTicker";
 import {casino} from "./casino";
 
 export async function worldMap()
@@ -27,7 +26,7 @@ export async function worldMap()
 
     woodedAreas[0].withStep(() => {
         if (woodedAreas[0].collides(tom))
-            throw new EscapeTickerAndExecute(() => game.goto(casino));
+            game.goto(casino);
     });
 
     woodedAreas.forEach(x => container.addChild(x));

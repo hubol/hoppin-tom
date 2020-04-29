@@ -2,7 +2,6 @@ import {game} from "../tom/game";
 import { TilingSprite, Text } from "pixi.js";
 import {Stars} from "../textures";
 import {SerifFont} from "../fonts";
-import {EscapeTickerAndExecute} from "../utils/iguaTicker";
 import {worldMap} from "./worldMap";
 import {playMusicAsync} from "../playMusic";
 import {Intro} from "../musics";
@@ -23,7 +22,7 @@ export async function theStory()
         .withStep(() => {
             text.y -= 0.2;
             if (text.y + text.height < 0)
-                throw new EscapeTickerAndExecute(() => game.goto(worldMap));
+                game.goto(worldMap);
         });
     text.y = game.height;
     game.stage.addChild(text);
