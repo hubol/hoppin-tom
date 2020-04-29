@@ -7,6 +7,8 @@ let tryingToPlayMusic = false;
 export async function playMusicAsync(howl: Howl)
 {
     await wait(() => !tryingToPlayMusic);
+    if (howl === currentlyPlayingMusic?.howl)
+        return;
 
     tryingToPlayMusic = true;
     const wasLoadedByPlayMusic = howl.state() === "unloaded";
