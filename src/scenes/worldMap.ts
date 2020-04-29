@@ -17,12 +17,10 @@ export async function worldMap()
     container.filters = [dropShadowFilter];
 
     const woodedAreas = [
-        woodedArea(12, 8, 0, 0x74C040),
-        woodedArea(48, 4, 1, 0x449430),
+        woodedArea(4, 64, 0, 0x74C040),
+        woodedArea(16, 16, 1, 0x449430),
         woodedArea(84, 8, 2, 0x74C040),
-        woodedArea(100, 54, 3, 0x449430),
-        woodedArea(75, 76, 4, 0x74C040),
-        woodedArea(2, 54, 5, 0x449430)];
+        woodedArea(100, 54, 3, 0x449430)];
 
     woodedAreas[0].withStep(() => {
         if (woodedAreas[0].collides(tom))

@@ -11,7 +11,7 @@ export async function theStory()
     await playMusicAsync(Intro);
     game.hudStage.visible = false;
     game.stage.addChild(new TilingSprite(Stars, game.width, game.height));
-    const text = new Text("Ah... The six wooded areas... Most who visit even one of them never returns... There are many goblins and eveil elves there... You wish to see the willow? Then I guess you will have to brave this challenge, Hoppin Tom...",
+    const text = new Text("Ah... The four wooded areas... Most who visit even one of them never returns... There are many goblins and eveil elves there... You wish to see the willow? Then I guess you will have to brave this challenge, Hoppin Tom...",
         {
             fontFamily: SerifFont,
             fontSize: 16,
