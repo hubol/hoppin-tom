@@ -6,6 +6,8 @@ import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
 import {playMusicAsync} from "../playMusic";
 import {Overworld} from "../musics";
+import {EscapeTickerAndExecute} from "../utils/iguaTicker";
+import {casino} from "./casino";
 
 export async function worldMap()
 {
@@ -22,6 +24,11 @@ export async function worldMap()
         woodedArea(100, 54, 3, 0x449430),
         woodedArea(75, 76, 4, 0x74C040),
         woodedArea(2, 54, 5, 0x449430)];
+
+    woodedAreas[0].withStep(() => {
+        if (woodedAreas[0].collides(tom))
+            throw new EscapeTickerAndExecute(() => game.goto(casino));
+    });
 
     woodedAreas.forEach(x => container.addChild(x));
     container.sortableChildren = true;
