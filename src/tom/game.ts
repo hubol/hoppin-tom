@@ -3,6 +3,7 @@ import {Container, DisplayObject, Ticker} from "pixi.js";
 import {EscapeTickerAndExecute, IguaTicker} from "../utils/iguaTicker";
 import {theStory} from "../scenes/theStory";
 import {worldMap} from "../scenes/worldMap";
+import {casino} from "../scenes/casino";
 
 export let game: Game;
 
@@ -10,13 +11,15 @@ export function startGame()
 {
     game = createGame();
     game.goto(theStory, { escapeTicker: false });
+    // game.goto(casino, { escapeTicker: false });
     // game.goto(worldMap, { escapeTicker: false });
 }
 
 function createGame(): Game
 {
-    const application = startApplication({ width: 128, height: 128, targetFps: 60 });
+    const application = startApplication({ width: 128, height: 128 });
     application.ticker = new IguaTicker();
+    application.ticker.maxFPS = 60;
     application.ticker.start();
 
     const stage = new Container();

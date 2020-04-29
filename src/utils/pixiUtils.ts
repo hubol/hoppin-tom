@@ -6,10 +6,6 @@ import Container = PIXI.Container;
 export function startApplication(options)
 {
     const app = createApplication(options);
-
-    if (options.targetFps)
-        app.ticker.maxFPS = options.targetFps;
-
     addApplicationToDocument(app);
     return app;
 }
