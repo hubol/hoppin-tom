@@ -2,7 +2,7 @@ import {playMusicAsync} from "../playMusic";
 import {WoodedArea1} from "../musics";
 import {game} from "../tom/game";
 import {CasinoBackground, CasinoExitSign, RandomSymbols, SmallTom, SpinButton} from "../textures";
-import { Sprite, Container, Graphics, Text, AnimatedSprite } from "pixi.js";
+import { Sprite, Container, Graphics, Text, DisplayObject } from "pixi.js";
 import {Key} from "../utils/key";
 import {DropShadowFilter} from "@pixi/filter-drop-shadow";
 import {GlowFilter} from "@pixi/filter-glow";
@@ -10,6 +10,7 @@ import {worldMap} from "./worldMap";
 import {SerifFont} from "../fonts";
 import {subimageTextures} from "../utils/simpleSpritesheet";
 import {SpinPress, SpinRelease} from "../sounds";
+import {magicLetter} from "../tom/hud";
 
 const randomSymbols = subimageTextures(RandomSymbols, 4);
 const glowColors = [ 0xffffff, 0xff0000, 0xffff00, 0x00ffff, 0xff00ff ];
@@ -87,6 +88,9 @@ export async function casino()
                 {
                     canMove = false;
                     setTimeout(() => canMove = true, 1000);
+                    const w = makeW(smallTom);
+                    w.position.set(48, Math.random() * 70);
+                    game.stage.addChild(w);
                 }
             }
             else
@@ -108,6 +112,18 @@ export async function casino()
     smallTom.filters = [dropShadowFilter];
 
     game.stage.addChild(background, spinButton, casinoExitSign, textBubble, slots, smallTom);
+}
+
+function makeW(player: DisplayObject)
+{
+    const sprite = magicLetter(0, 0, "w");
+    return sprite.withStep(() => {
+        if (sprite.collides(player))
+        {
+            game.hud.addW();
+            sprite.destroy();
+        }
+    })
 }
 
 interface Showable

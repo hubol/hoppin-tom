@@ -4,6 +4,7 @@ import * as PIXI from "pixi.js";
 
 export let CasinoBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let CasinoExitSign: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let MagicLetters: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapWoodedArea: PIXI.Texture = undefined as unknown as PIXI.Texture;
@@ -22,6 +23,9 @@ export function loadTexturesAsync()
 
     const CasinoExitSignPath = require("./images/casino exit sign.png");
     loader.add(CasinoExitSignPath); 
+
+    const MagicLettersPath = require("./images/magic letters.png");
+    loader.add(MagicLettersPath); 
 
     const MapBackgroundPath = require("./images/map background.png");
     loader.add(MapBackgroundPath); 
@@ -50,6 +54,7 @@ export function loadTexturesAsync()
         loader.load((_, resources) => {
             CasinoBackground = resources[CasinoBackgroundPath]?.texture as PIXI.Texture;
             CasinoExitSign = resources[CasinoExitSignPath]?.texture as PIXI.Texture;
+            MagicLetters = resources[MagicLettersPath]?.texture as PIXI.Texture;
             MapBackground = resources[MapBackgroundPath]?.texture as PIXI.Texture;
             MapTom = resources[MapTomPath]?.texture as PIXI.Texture;
             MapWoodedArea = resources[MapWoodedAreaPath]?.texture as PIXI.Texture;

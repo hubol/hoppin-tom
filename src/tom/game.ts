@@ -4,6 +4,7 @@ import {EscapeTickerAndExecute, IguaTicker} from "../utils/iguaTicker";
 import {theStory} from "../scenes/theStory";
 import {worldMap} from "../scenes/worldMap";
 import {casino} from "../scenes/casino";
+import {hud, Hud} from "./hud";
 
 export let game: Game;
 
@@ -25,6 +26,10 @@ function createGame(): Game
     const stage = new Container();
     const hudStage = new Container();
     application.stage.addChild(stage, hudStage);
+
+    const theHud = hud();
+    theHud.position.set(0, 112);
+    hudStage.addChild(theHud);
 
     const gotoImpl = (scene: Scene) =>
     {
@@ -66,7 +71,8 @@ function createGame(): Game
                 throw new EscapeTickerAndExecute(() => gotoImpl(scene));
             else
                 gotoImpl(scene);
-        }
+        },
+        hud: theHud
     };
 
     return game;
@@ -107,6 +113,7 @@ interface Game
     width: number;
     height: number;
     goto(scene: Scene, gotoOptions?: GotoOptions);
+    hud: Hud & Container;
 }
 
 interface Camera
