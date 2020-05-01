@@ -46,7 +46,7 @@ export async function casino()
 
     const smallTom = Sprite.from(SmallTom);
     smallTom.anchor.set(0.5, 0.5);
-    smallTom.position.set(32, 12);
+    smallTom.position.set(32, 32);
     smallTom.withStep(() => {
         if (!canMove)
             return;
