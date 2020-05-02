@@ -5,6 +5,7 @@ import {theStory} from "../scenes/theStory";
 import {worldMap} from "../scenes/worldMap";
 import {casino} from "../scenes/casino";
 import {hud, Hud} from "./hud";
+import {congrats} from "../scenes/congrats";
 
 export let game: Game;
 
@@ -12,6 +13,11 @@ export function startGame()
 {
     game = createGame();
     game.goto(theStory, { escapeTicker: false });
+    game.hud.addL();
+    game.hud.addL();
+    game.hud.addI();
+    game.hud.addO();
+    // game.goto(congrats, { escapeTicker: false });
     // game.goto(casino, { escapeTicker: false });
     // game.goto(worldMap, { escapeTicker: false });
 }

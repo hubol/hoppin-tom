@@ -3,6 +3,7 @@ import {game} from "./game";
 import {subimageTextures} from "../utils/simpleSpritesheet";
 import {MagicLetters} from "../textures";
 import {DropShadowFilter} from "@pixi/filter-drop-shadow";
+import {congrats} from "../scenes/congrats";
 
 export interface Hud
 {
@@ -54,7 +55,9 @@ export function hud()
 
     function onLetterEarned()
     {
-
+        // TODO sfx
+        if (w1.visible && i.visible && l1.visible && l2.visible && o.visible && w2.visible)
+            game.goto(congrats);
     }
 
     const container = new Container() as Container & Hud;

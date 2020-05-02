@@ -4,6 +4,7 @@ import * as PIXI from "pixi.js";
 
 export let CasinoBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let CasinoExitSign: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let HdTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MagicLetters: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
@@ -12,6 +13,7 @@ export let RandomSymbols: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SmallTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SpinButton: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let Stars: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let WillowTree: PIXI.Texture = undefined as unknown as PIXI.Texture;
 
 
 export function loadTexturesAsync()
@@ -23,6 +25,9 @@ export function loadTexturesAsync()
 
     const CasinoExitSignPath = require("./images/casino exit sign.png");
     loader.add(CasinoExitSignPath); 
+
+    const HdTomPath = require("./images/hd tom.png");
+    loader.add(HdTomPath); 
 
     const MagicLettersPath = require("./images/magic letters.png");
     loader.add(MagicLettersPath); 
@@ -48,12 +53,16 @@ export function loadTexturesAsync()
     const StarsPath = require("./images/stars.png");
     loader.add(StarsPath); 
 
+    const WillowTreePath = require("./images/willow tree.png");
+    loader.add(WillowTreePath); 
+
     
     return new Promise(resolve =>
     {
         loader.load((_, resources) => {
             CasinoBackground = resources[CasinoBackgroundPath]?.texture as PIXI.Texture;
             CasinoExitSign = resources[CasinoExitSignPath]?.texture as PIXI.Texture;
+            HdTom = resources[HdTomPath]?.texture as PIXI.Texture;
             MagicLetters = resources[MagicLettersPath]?.texture as PIXI.Texture;
             MapBackground = resources[MapBackgroundPath]?.texture as PIXI.Texture;
             MapTom = resources[MapTomPath]?.texture as PIXI.Texture;
@@ -62,6 +71,7 @@ export function loadTexturesAsync()
             SmallTom = resources[SmallTomPath]?.texture as PIXI.Texture;
             SpinButton = resources[SpinButtonPath]?.texture as PIXI.Texture;
             Stars = resources[StarsPath]?.texture as PIXI.Texture;
+            WillowTree = resources[WillowTreePath]?.texture as PIXI.Texture;
 
             resolve();
         });
