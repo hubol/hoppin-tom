@@ -4,10 +4,12 @@ import {HdTom, WillowTree} from "../textures";
 import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
 import {SerifFont} from "../fonts";
+import {playMusicAsync} from "../playMusic";
+import {Congratulations} from "../musics";
 
-export function congrats()
+export async function congrats()
 {
-    // TODO play music
+    await playMusicAsync(Congratulations);
 
     game.backgroundColor = 0x1044ff;
     game.hudStage.visible = false;
