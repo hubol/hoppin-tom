@@ -4,11 +4,13 @@ import * as PIXI from "pixi.js";
 
 export let CasinoBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let CasinoExitSign: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let Goblim: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let HdTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MagicLetters: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapWoodedArea: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let PixelArtTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let RandomSymbols: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SmallTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SpinButton: PIXI.Texture = undefined as unknown as PIXI.Texture;
@@ -26,6 +28,9 @@ export function loadTexturesAsync()
     const CasinoExitSignPath = require("./images/casino exit sign.png");
     loader.add(CasinoExitSignPath); 
 
+    const GoblimPath = require("./images/goblim.png");
+    loader.add(GoblimPath); 
+
     const HdTomPath = require("./images/hd tom.png");
     loader.add(HdTomPath); 
 
@@ -40,6 +45,9 @@ export function loadTexturesAsync()
 
     const MapWoodedAreaPath = require("./images/map wooded area.png");
     loader.add(MapWoodedAreaPath); 
+
+    const PixelArtTomPath = require("./images/pixel art tom.png");
+    loader.add(PixelArtTomPath); 
 
     const RandomSymbolsPath = require("./images/random symbols.png");
     loader.add(RandomSymbolsPath); 
@@ -62,11 +70,13 @@ export function loadTexturesAsync()
         loader.load((_, resources) => {
             CasinoBackground = resources[CasinoBackgroundPath]?.texture as PIXI.Texture;
             CasinoExitSign = resources[CasinoExitSignPath]?.texture as PIXI.Texture;
+            Goblim = resources[GoblimPath]?.texture as PIXI.Texture;
             HdTom = resources[HdTomPath]?.texture as PIXI.Texture;
             MagicLetters = resources[MagicLettersPath]?.texture as PIXI.Texture;
             MapBackground = resources[MapBackgroundPath]?.texture as PIXI.Texture;
             MapTom = resources[MapTomPath]?.texture as PIXI.Texture;
             MapWoodedArea = resources[MapWoodedAreaPath]?.texture as PIXI.Texture;
+            PixelArtTom = resources[PixelArtTomPath]?.texture as PIXI.Texture;
             RandomSymbols = resources[RandomSymbolsPath]?.texture as PIXI.Texture;
             SmallTom = resources[SmallTomPath]?.texture as PIXI.Texture;
             SpinButton = resources[SpinButtonPath]?.texture as PIXI.Texture;

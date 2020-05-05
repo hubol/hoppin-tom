@@ -11,6 +11,7 @@ export interface Hud
     addI();
     addL();
     addO();
+    hasI(): boolean;
 }
 
 const magicLetters = subimageTextures(MagicLetters, 4);
@@ -61,6 +62,9 @@ export function hud()
     }
 
     const container = new Container() as Container & Hud;
+
+    container.hasI = () => i.visible;
+
     container.addW = () => {
         if (w1.visible)
             w2.visible = true;

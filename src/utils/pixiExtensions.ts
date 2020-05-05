@@ -12,6 +12,7 @@ declare global {
             useNearestFiltering();
             rectangle: Rectangle;
             withStep(step: () => void): this;
+            at(x: number, y: number): this;
         }
 
         export interface Container {
@@ -22,7 +23,9 @@ declare global {
 
 Object.defineProperty(PIXI.DisplayObject.prototype, "rectangle", {
     get: function rectangle() {
-        return normalizeRectangle(createRectangle(this));
+        if (!this.anchor)
+            return normalizeRectangle(createRectangle(this));
+        return normalizeRectangle({ x: this.x - this.width * this.anchor.x, y: this.y - this.height * this.anchor.y, width: this.width, height: this.height });
     }
 });
 
@@ -31,6 +34,12 @@ PIXI.DisplayObject.prototype.withStep = function(step)
     return this
         .on("added", () => game.ticker.add(step))
         .on("removed", () => game.ticker.remove(step));
+}
+
+PIXI.DisplayObject.prototype.at = function(x, y)
+{
+    this.position.set(x, y);
+    return this;
 }
 
 PIXI.Container.prototype.removeAllChildren = function ()

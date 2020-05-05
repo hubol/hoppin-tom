@@ -1,4 +1,4 @@
-import {game} from "../tom/game";
+import {game, Scene} from "../tom/game";
 import { Sprite, Container, DisplayObject } from "pixi.js";
 import {MapBackground, MapTom, MapWoodedArea} from "../textures";
 import { DropShadowFilter } from "@pixi/filter-drop-shadow";
@@ -7,6 +7,7 @@ import {approachLinear} from "../utils/math";
 import {playMusicAsync} from "../playMusic";
 import {Overworld} from "../musics";
 import {casino} from "./casino";
+import {arena} from "./arena";
 
 export async function worldMap()
 {
@@ -22,18 +23,26 @@ export async function worldMap()
         woodedArea(84, 8, 2, 0x74C040),
         woodedArea(100, 54, 3, 0x449430)];
 
-    woodedAreas[0].withStep(() => {
-        if (woodedAreas[0].collides(tom))
-            game.goto(casino);
-    });
 
-    woodedAreas.forEach(x => container.addChild(x));
     container.sortableChildren = true;
     const tom = worldMapTom(64, 64);
+
+    makePortal(woodedAreas[0], tom, casino);
+    makePortal(woodedAreas[1], tom, arena);
+
+    woodedAreas.forEach(x => container.addChild(x));
     // tom.filters = [dropShadowFilter];
     container.addChild(tom);
 
     game.stage.addChild(container);
+}
+
+function makePortal(displayObject: DisplayObject, tom: DisplayObject, scene: Scene)
+{
+    displayObject.withStep(() => {
+        if (displayObject.collides(tom))
+            game.goto(scene);
+    });
 }
 
 function worldMapTom(x, y): DisplayObject

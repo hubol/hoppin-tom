@@ -28,7 +28,7 @@ function previouslyUp(key: KeyCode)
     return !previouslyDown(key);
 }
 
-type KeyCode =
+export type KeyCode =
     "ArrowUp"
     | "ArrowRight"
     | "ArrowDown"
