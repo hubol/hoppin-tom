@@ -7,12 +7,21 @@ import {Key, KeyCode} from "../utils/key";
 import {SansSerifFont, SerifFont} from "../fonts";
 import {sleep} from "../utils/sleep";
 import {wait} from "../utils/wait";
+import {approachLinear} from "../utils/math";
 
 export async function arena()
 {
     await playMusicAsync(WoodedArea2);
-    const tomSprite = flippingSprite(PixelArtTom).at(32, 50);
+    const tomSprite = createTom().at(32, 50);
     const goblimSprite = flippingSprite(GoblimTexture).at(96, 64);
+    goblimSprite.withStep(() => {
+       if (tomSprite.collides(goblimSprite))
+       {
+           goblimSprite.tint = 0xff0000;
+       }
+       else
+           goblimSprite.tint = 0xffffff;
+    });
 
     const objects = [tomSprite];
     if (!game.hud.hasI())
@@ -27,6 +36,34 @@ export async function arena()
 
     if (!game.hud.hasI())
         startCutsceneAsync(tomSprite, goblimSprite);
+}
+
+function createTom(): Tom
+{
+    let hspeed = 0;
+    let vspeed = 0;
+    const sprite = flippingSprite(PixelArtTom);
+
+    sprite.withStep(() => {
+        if (Key.isDown("ArrowRight"))
+            hspeed = approachLinear(hspeed, 2, 1);
+        else if (Key.isDown("ArrowLeft"))
+            hspeed = approachLinear(hspeed, -2, 1);
+        else
+            hspeed = approachLinear(hspeed, 0, 0.5);
+
+        if (Key.isDown("ArrowDown"))
+            vspeed = approachLinear(vspeed, 1, 0.5);
+        else if (Key.isDown("ArrowUp"))
+            vspeed = approachLinear(vspeed, -1, 0.5);
+        else
+            vspeed = approachLinear(vspeed, 0, 0.25);
+
+        sprite.x += hspeed;
+        sprite.y += vspeed;
+    })
+
+    return sprite;
 }
 
 async function startCutsceneAsync(tom: Tom, goblim: Goblim)
@@ -123,21 +160,19 @@ function createTextbox(): Textbox
     }
 }
 
-function waitForKey(keyCode: KeyCode)
+async function waitForKey(keyCode: KeyCode)
 {
-    let down = false;
-    let up = false;
+    let advance = false;
 
     const displayObject = new DisplayObject();
     displayObject.withStep(() => {
-        if (Key.justWentDown(keyCode))
-            down = true;
-        if (down && Key.justWentUp(keyCode))
-            up = true;
+        if (Key.justWentDown(keyCode) || Key.justWentUp(keyCode))
+            advance = true;
     });
     game.stage.addChild(displayObject);
 
-    return wait(() => up);
+    await wait(() => advance);
+    displayObject.destroy();
 }
 
 interface Shadows
