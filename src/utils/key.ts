@@ -2,7 +2,7 @@ export const Key =
 {
     isDown(key: KeyCode)
     {
-        return key in currentKeysState && currentKeysState[key];
+        return key in currentKeysState && (currentKeysState[key] & 0b010);
     },
     isUp(key: KeyCode)
     {
@@ -10,23 +10,13 @@ export const Key =
     },
     justWentDown(key: KeyCode)
     {
-        return previouslyUp(key) && this.isDown(key);
+        return key in currentKeysState && (currentKeysState[key] & 0b100);
     },
     justWentUp(key: KeyCode)
     {
-        return previouslyDown(key) && this.isUp(key);
+        return key in currentKeysState && (currentKeysState[key] & 0b001);
     }
 };
-
-function previouslyDown(key: KeyCode)
-{
-    return key in previousKeysState && previousKeysState[key];
-}
-
-function previouslyUp(key: KeyCode)
-{
-    return !previouslyDown(key);
-}
 
 export type KeyCode =
     "ArrowUp"
@@ -38,21 +28,20 @@ export type KeyCode =
 
 interface KeysState
 {
-    [index: string]: boolean;
+    [index: string]: number;
 }
 
-let previousKeysState: KeysState = { };
 let currentKeysState: KeysState = { };
 let workingKeysState: KeysState = { };
 
 function handleKeyDown(event: KeyboardEvent)
 {
-    workingKeysState[event.code] = true;
+    workingKeysState[event.code] = (workingKeysState[event.code] ?? 0) | 0b110;
 }
 
 function handleKeyUp(event: KeyboardEvent)
 {
-    workingKeysState[event.code] = false;
+    workingKeysState[event.code] = ((workingKeysState[event.code] ?? 0) | 0b001) & 0b101;
 }
 
 let startedKeyListener = false;
@@ -74,6 +63,9 @@ export function advanceKeyListener()
     if (!startedKeyListener)
         throw new Error("Key listener must be started to advance!");
 
-    previousKeysState = currentKeysState;
     currentKeysState = { ...workingKeysState };
+
+    const keys = Object.keys(workingKeysState);
+    for (const key of keys)
+        workingKeysState[key] &= 0b010;
 }
