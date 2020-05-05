@@ -8,22 +8,15 @@ import {SansSerifFont, SerifFont} from "../fonts";
 import {sleep} from "../utils/sleep";
 import {wait} from "../utils/wait";
 import {approachLinear} from "../utils/math";
+import {GoblimHurt, GoblimSpeak} from "../sounds";
 
 export async function arena()
 {
     await playMusicAsync(WoodedArea2);
     const tomSprite = createTom().at(32, 50);
-    const goblimSprite = flippingSprite(GoblimTexture).at(96, 64);
-    goblimSprite.withStep(() => {
-       if (tomSprite.collides(goblimSprite))
-       {
-           goblimSprite.tint = 0xff0000;
-       }
-       else
-           goblimSprite.tint = 0xffffff;
-    });
+    const goblimSprite = createGoblim(tomSprite).at(96, 64);
 
-    const objects = [tomSprite];
+    const objects: DisplayObject[] = [tomSprite];
     if (!game.hud.hasI())
     {
         objects.push(goblimSprite);
@@ -38,30 +31,54 @@ export async function arena()
         startCutsceneAsync(tomSprite, goblimSprite);
 }
 
+function createGoblim(tomSprite: Tom): Goblim
+{
+    const goblimSprite = flippingSprite(GoblimTexture) as Sprite & Speaker;
+    let i = 0;
+    goblimSprite.withStep(() => {
+        if (tomSprite.collides(goblimSprite))
+        {
+            goblimSprite.tint = 0xff0000;
+            if (i++ % 4 === 0)
+                GoblimHurt.play();
+        }
+        else
+            goblimSprite.tint = 0xffffff;
+    });
+
+    goblimSprite.voice = GoblimSpeak;
+    return goblimSprite;
+}
+
 function createTom(): Tom
 {
     let hspeed = 0;
     let vspeed = 0;
-    const sprite = flippingSprite(PixelArtTom);
+    const sprite = flippingSprite(PixelArtTom) as Sprite & Tomstuff;
 
     sprite.withStep(() => {
-        if (Key.isDown("ArrowRight"))
-            hspeed = approachLinear(hspeed, 2, 1);
-        else if (Key.isDown("ArrowLeft"))
-            hspeed = approachLinear(hspeed, -2, 1);
-        else
-            hspeed = approachLinear(hspeed, 0, 0.5);
+        if (sprite.canMove)
+        {
+            if (Key.isDown("ArrowRight"))
+                hspeed = approachLinear(hspeed, 2, 1);
+            else if (Key.isDown("ArrowLeft"))
+                hspeed = approachLinear(hspeed, -2, 1);
+            else
+                hspeed = approachLinear(hspeed, 0, 0.5);
 
-        if (Key.isDown("ArrowDown"))
-            vspeed = approachLinear(vspeed, 1, 0.5);
-        else if (Key.isDown("ArrowUp"))
-            vspeed = approachLinear(vspeed, -1, 0.5);
-        else
-            vspeed = approachLinear(vspeed, 0, 0.25);
-
+            if (Key.isDown("ArrowDown"))
+                vspeed = approachLinear(vspeed, 1, 0.5);
+            else if (Key.isDown("ArrowUp"))
+                vspeed = approachLinear(vspeed, -1, 0.5);
+            else
+                vspeed = approachLinear(vspeed, 0, 0.25);
+        }
         sprite.x += hspeed;
         sprite.y += vspeed;
-    })
+
+        sprite.x = Math.min(game.width, Math.max(0, sprite.x));
+        sprite.y = Math.min(game.height, Math.max(12, sprite.y));
+    });
 
     return sprite;
 }
@@ -78,14 +95,26 @@ async function startCutsceneAsync(tom: Tom, goblim: Goblim)
     await sleep(250);
     await textbox.say("Look, I know what you want. But I can't let you see the willow.");
     await textbox.say("En garde!!!!");
+
+    tom.canMove = true;
 }
 
-type Tom = DisplayObject;
-type Goblim = DisplayObject;
+interface Tomstuff
+{
+    canMove: boolean;
+}
+
+type Tom = DisplayObject & Tomstuff;
+type Goblim = DisplayObject & Speaker;
+
+interface Speaker
+{
+    voice: Howl;
+}
 
 interface Textbox
 {
-    speaker: DisplayObject;
+    speaker: DisplayObject | Speaker;
     say(message: string): Promise<void>;
     displayObject: DisplayObject;
 }
@@ -101,12 +130,13 @@ function createTextbox(): Textbox
         return game.width * .5;
     }
 
-    let speaker: DisplayObject;
+    let speaker: DisplayObject | Speaker;
 
     const graphics = new Graphics();
     const text = new Text("", {
         fontFamily: SansSerifFont,
         fontSize: 10,
+        fontWeight: "bold",
         align: "center",
         trim: true,
         wordWrap: true,
@@ -148,6 +178,8 @@ function createTextbox(): Textbox
         async say(nextMessage: string): Promise<void> {
             container.visible = true;
             text.text = nextMessage;
+            if (speaker && "voice" in speaker)
+                speaker.voice.play();
             await waitForKey("Space");
             container.visible = false;
         },
@@ -162,12 +194,15 @@ function createTextbox(): Textbox
 
 async function waitForKey(keyCode: KeyCode)
 {
+    let wasUp = false;
     let advance = false;
 
     const displayObject = new DisplayObject();
     displayObject.withStep(() => {
-        if (Key.justWentDown(keyCode) || Key.justWentUp(keyCode))
+        if (wasUp && Key.justWentDown(keyCode))
             advance = true;
+        if (Key.isUp(keyCode))
+            wasUp = true;
     });
     game.stage.addChild(displayObject);
 
