@@ -13,6 +13,7 @@ declare global {
             rectangle: Rectangle;
             withStep(step: () => void): this;
             at(x: number, y: number): this;
+            destroyed: boolean;
         }
 
         export interface Container {
@@ -26,6 +27,12 @@ Object.defineProperty(PIXI.DisplayObject.prototype, "rectangle", {
         if (!this.anchor)
             return normalizeRectangle(createRectangle(this));
         return normalizeRectangle({ x: this.x - this.width * this.anchor.x, y: this.y - this.height * this.anchor.y, width: this.width, height: this.height });
+    }
+});
+
+Object.defineProperty(PIXI.DisplayObject.prototype, "destroyed", {
+    get: function destroyed() {
+        return this._destroyed;
     }
 });
 

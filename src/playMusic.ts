@@ -21,8 +21,7 @@ export async function playMusicAsync(howl: Howl)
         howl.loop(true);
         howl.play();
 
-        if (currentlyPlayingMusic?.wasLoadedByPlayMusic)
-            currentlyPlayingMusic.howl.unload();
+        stopMusic();
 
         currentlyPlayingMusic = { howl, wasLoadedByPlayMusic };
     }
@@ -34,6 +33,18 @@ export async function playMusicAsync(howl: Howl)
     {
         tryingToPlayMusic = false;
     }
+}
+
+export function stopMusic()
+{
+    if (currentlyPlayingMusic)
+    {
+        if (currentlyPlayingMusic.wasLoadedByPlayMusic)
+            currentlyPlayingMusic.howl.unload();
+        else
+            currentlyPlayingMusic.howl.stop();
+    }
+    currentlyPlayingMusic = null;
 }
 
 interface CurrentlyPlayingMusic

@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
     
 // This file is generated. Do not touch.
 
+export let ArenaBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let CasinoBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let CasinoExitSign: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let Goblim: PIXI.Texture = undefined as unknown as PIXI.Texture;
@@ -21,6 +22,9 @@ export let WillowTree: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export function loadTexturesAsync()
 {
     const loader = new PIXI.Loader();
+
+    const ArenaBackgroundPath = require("./images/arena background.png");
+    loader.add(ArenaBackgroundPath); 
 
     const CasinoBackgroundPath = require("./images/casino background.png");
     loader.add(CasinoBackgroundPath); 
@@ -68,6 +72,7 @@ export function loadTexturesAsync()
     return new Promise(resolve =>
     {
         loader.load((_, resources) => {
+            ArenaBackground = resources[ArenaBackgroundPath]?.texture as PIXI.Texture;
             CasinoBackground = resources[CasinoBackgroundPath]?.texture as PIXI.Texture;
             CasinoExitSign = resources[CasinoExitSignPath]?.texture as PIXI.Texture;
             Goblim = resources[GoblimPath]?.texture as PIXI.Texture;

@@ -6,6 +6,7 @@ import {worldMap} from "../scenes/worldMap";
 import {casino} from "../scenes/casino";
 import {hud, Hud} from "./hud";
 import {congrats} from "../scenes/congrats";
+import {arena} from "../scenes/arena";
 
 export let game: Game;
 
@@ -15,10 +16,10 @@ export function startGame()
     game.goto(theStory, { escapeTicker: false });
     game.hud.addL();
     game.hud.addL();
-    game.hud.addI();
+    // game.hud.addI();
     game.hud.addO();
     // game.goto(congrats, { escapeTicker: false });
-    // game.goto(casino, { escapeTicker: false });
+    // game.goto(arena, { escapeTicker: false });
     // game.goto(worldMap, { escapeTicker: false });
 }
 
@@ -107,7 +108,7 @@ interface GotoOptions
     escapeTicker?: boolean;
 }
 
-type Scene = () => void | Promise<void>;
+export type Scene = () => void | Promise<void>;
 
 interface Game
 {
