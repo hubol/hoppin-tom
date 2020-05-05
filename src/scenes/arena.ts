@@ -91,6 +91,7 @@ async function onGoblimTotallyInjured(goblim: Goblim, tom: Tom)
                 game.hud.addI();
                 GoblimWarp.play();
                 didit = true;
+                sprite.visible = false;
             }
         });
 
@@ -109,6 +110,7 @@ function createGoblim(tomSprite: Tom): Goblim
 
     let dist = 32;
     let f = 0;
+    let hurtLast = false;
 
     goblimSprite.withStep(() => {
         if (dying || !goblimSprite.fighting)
@@ -168,7 +170,8 @@ function createGoblim(tomSprite: Tom): Goblim
             GoblimBounce.play();
         }
 
-        if (tomSprite.collides(goblimSprite))
+        const hurt = tomSprite.collides(goblimSprite);
+        if (hurt)
         {
             injured += 0.5;
             if (warpMode && f++ > 5)
@@ -181,11 +184,13 @@ function createGoblim(tomSprite: Tom): Goblim
             hspeed += -.005 + Math.random() * .01;
             vspeed += -.005 + Math.random() * .01;
             goblimSprite.tint = 0xff0000;
-            if (i++ % 4 === 0)
+            if (i++ % 4 === 0 || !hurtLast)
                 GoblimHurt.play();
         }
         else
             goblimSprite.tint = 0xffffff;
+
+        hurtLast = hurt;
     });
 
     goblimSprite.voice = GoblimSpeak;
