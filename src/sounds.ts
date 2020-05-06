@@ -41,3 +41,8 @@ export const SpinRelease = new Howl({
     src: [require("./sound/spin release.ogg"), require("./sound/spin release.mp3")],
     
 });
+
+export const TomSpeak = new Howl({
+    src: [require("./sound/tom speak.ogg"), require("./sound/tom speak.mp3")],
+    
+});

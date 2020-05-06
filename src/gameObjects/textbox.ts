@@ -13,9 +13,10 @@ interface Textbox
     speaker: DisplayObject | Speaker;
     say(message: string): Promise<void>;
     displayObject: DisplayObject;
+    destroy();
 }
 
-export function createTextbox(): Textbox
+export function createTextbox(stage?: Container): Textbox
 {
     function getTailStartX(x : number)
     {
@@ -70,6 +71,9 @@ export function createTextbox(): Textbox
     container.visible = false;
     container.addChild(graphics, text);
 
+    if (stage)
+        stage.addChild(container);
+
     return {
         async say(nextMessage: string): Promise<void> {
             container.visible = true;
@@ -84,6 +88,9 @@ export function createTextbox(): Textbox
         },
         set speaker(displayObject) {
             speaker = displayObject;
+        },
+        destroy() {
+            container.destroy();
         }
     }
 }

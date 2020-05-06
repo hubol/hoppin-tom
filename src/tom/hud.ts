@@ -12,6 +12,7 @@ export interface Hud
     addL();
     addO();
     hasI(): boolean;
+    ownedLs(): 0 | 1 | 2;
 }
 
 const magicLetters = subimageTextures(MagicLetters, 4);
@@ -87,6 +88,7 @@ export function hud()
         o.visible = true;
         onLetterEarned();
     }
+    container.ownedLs = () => ((l1.visible ? 1 : 0) + (l2.visible ? 1 : 0)) as 0 | 1 | 2;
 
     const graphics = new Graphics();
     graphics.beginFill(0x222244);

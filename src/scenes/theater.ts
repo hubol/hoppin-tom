@@ -1,11 +1,62 @@
 import { Sprite } from "pixi.js";
-import {Sing} from "../sounds";
+import {Sing, TomSpeak} from "../sounds";
 import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
 import {game} from "../tom/game";
 import {subimageTextures} from "../utils/simpleSpritesheet";
 import {SingingTom} from "../textures";
 import {stopMusic} from "../playMusic";
+import {createTextbox, Speaker} from "../gameObjects/textbox";
+import {sleep} from "../utils/sleep";
+import {worldMap} from "./worldMap";
+import {merge} from "../utils/merge";
+
+let tom: Tom;
+
+export function theater()
+{
+    stopMusic();
+
+    tom = makeTom();
+
+    game.stage.addChild(tom);
+
+    const ownedLs = game.hud.ownedLs();
+    if (ownedLs === 0)
+        askForSong();
+    else if (ownedLs === 1)
+        askForEncore();
+    else
+        sayNothingToDo();
+}
+
+async function askForSong()
+{
+    const textbox = createTextbox(game.stage);
+
+    textbox.destroy();
+}
+
+async function askForEncore()
+{
+    const textbox = createTextbox(game.stage);
+
+    textbox.destroy();
+}
+
+async function sayNothingToDo()
+{
+    const textbox = createTextbox(game.stage);
+
+    await sleep(500);
+    tom.canSing = true;
+    textbox.speaker = tom;
+    await textbox.say("I dont think anyone wants to hear my singing voice")
+    await sleep(500);
+    game.goto(worldMap, { escapeTicker: false })
+
+    textbox.destroy();
+}
 
 const rates =
     [130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185, 196, 207.65, 220, 233.08, 246.94, 261.63, 277.18, 293.66, 311.13, 329.63, 349.23]
@@ -13,28 +64,40 @@ const rates =
 
 const singingTomTextures = subimageTextures(SingingTom, 2);
 
-export function theater()
+interface TomProps
 {
-    stopMusic();
+    canSing: boolean;
+}
+
+type Tom = Sprite & TomProps & Speaker;
+
+function makeTom(): Tom
+{
     Sing.loop(true);
     Sing.volume(0);
 
     let offx = 0;
     let offy = 0;
-    const displayObject = Sprite.from(singingTomTextures[0]).withStep(() => {
-        let freq: number | null = null;
-        if (Key.isDown("ArrowRight"))
-            freq = (freq ?? 0) + 1;
-        if (Key.isDown("ArrowDown"))
-            freq = (freq ?? 0) + 2;
-        if (Key.isDown("ArrowLeft"))
-            freq = (freq ?? 0) + 4;
-        if (Key.isDown("ArrowUp"))
-            freq = (freq ?? 0) + 8;
 
-        if (freq)
+    let canSing = false;
+
+    const sprite = Sprite.from(singingTomTextures[0]).withStep(() => {
+        let freq: number | null = null;
+
+        if (canSing)
         {
-            displayObject.texture = singingTomTextures[1];
+            if (Key.isDown("ArrowRight"))
+                freq = (freq ?? 0) + 1;
+            if (Key.isDown("ArrowDown"))
+                freq = (freq ?? 0) + 2;
+            if (Key.isDown("ArrowLeft"))
+                freq = (freq ?? 0) + 4;
+            if (Key.isDown("ArrowUp"))
+                freq = (freq ?? 0) + 8;
+        }
+
+        if (freq) {
+            sprite.texture = singingTomTextures[1];
             const rate = rates[Math.min(freq as number - 1, rates.length - 1)];
             if (Sing.volume() === 0)
                 Sing.rate(rate);
@@ -50,12 +113,10 @@ export function theater()
             if (Math.abs(offy) > 8)
                 offy *= .9;
 
-            displayObject.x += offx - poffx;
-            displayObject.y += offy - poffy;
-        }
-        else
-        {
-            displayObject.texture = singingTomTextures[0];
+            sprite.x += offx - poffx;
+            sprite.y += offy - poffy;
+        } else {
+            sprite.texture = singingTomTextures[0];
         }
 
         Sing.volume(approachLinear(Sing.volume(), !freq ? 0 : 1, 0.2));
@@ -64,7 +125,13 @@ export function theater()
         .on("added", () => Sing.play())
         .at(game.width / 2, game.height / 2 - 10);
 
-    displayObject.anchor.set(.5, .5);
+    sprite.anchor.set(.5, .5);
 
-    game.stage.addChild(displayObject);
+    return merge(sprite, {
+        set canSing(v: boolean) {
+            canSing = v;
+            console.log(canSing);
+        },
+        voice: TomSpeak
+    });
 }
