@@ -7,6 +7,7 @@ import {casino} from "../scenes/casino";
 import {hud, Hud} from "./hud";
 import {congrats} from "../scenes/congrats";
 import {arena} from "../scenes/arena";
+import {advanceKeyListener, startKeyListener} from "../utils/key";
 
 export let game: Game;
 
@@ -26,9 +27,16 @@ export function startGame()
 function createGame(): Game
 {
     const application = startApplication({ width: 128, height: 128 });
-    application.ticker = new IguaTicker();
+
     application.ticker.maxFPS = 60;
     application.ticker.start();
+
+    const iguaTicker = new IguaTicker();
+
+    startKeyListener();
+    iguaTicker.add(advanceKeyListener);
+
+    application.ticker.add(() => iguaTicker.update());
 
     const stage = new Container();
     const hudStage = new Container();
@@ -40,25 +48,29 @@ function createGame(): Game
 
     const gotoImpl = (scene: Scene) =>
     {
-        stage.removeAllChildren();
-        stage.visible = true;
-        hudStage.visible = true;
-        game.camera.x = 0;
-        game.camera.y = 0;
-        game.backgroundColor = 0x333333;
-        const sceneResult = scene();
-        if (sceneResult instanceof Promise)
-        {
-            application.ticker.stop();
-            sceneResult.then(() => application.ticker.start());
-        }
+        application.ticker.stop();
+        window.setTimeout(() => {
+            stage.removeAllChildren();
+            stage.visible = true;
+            hudStage.visible = true;
+            game.camera.x = 0;
+            game.camera.y = 0;
+            game.backgroundColor = 0x333333;
+            const sceneResult = scene();
+            if (sceneResult instanceof Promise)
+                sceneResult.then(() => {
+                    application.ticker.start()
+                });
+            else
+                application.ticker.start();
+        })
     };
 
     const game = {
         hudStage,
         stage,
         get ticker() {
-            return application.ticker;
+            return iguaTicker;
         },
         camera: createCamera(application.stage),
         get backgroundColor() {

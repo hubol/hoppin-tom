@@ -30,8 +30,6 @@ function getAllChildren(container, list = [])
 export function createApplication(options)
 {
     const app = new PIXI.Application(options);
-    startKeyListener();
-    app.ticker.add(advanceKeyListener);
     applications.push(app);
     return app;
 }
