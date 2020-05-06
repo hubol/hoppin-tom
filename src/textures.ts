@@ -13,6 +13,7 @@ export let MapTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapWoodedArea: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let PixelArtTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let RandomSymbols: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let SingingTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SmallTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SpinButton: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let Stars: PIXI.Texture = undefined as unknown as PIXI.Texture;
@@ -56,6 +57,9 @@ export function loadTexturesAsync()
     const RandomSymbolsPath = require("./images/random symbols.png");
     loader.add(RandomSymbolsPath); 
 
+    const SingingTomPath = require("./images/singing tom.png");
+    loader.add(SingingTomPath); 
+
     const SmallTomPath = require("./images/small tom.png");
     loader.add(SmallTomPath); 
 
@@ -83,6 +87,7 @@ export function loadTexturesAsync()
             MapWoodedArea = resources[MapWoodedAreaPath]?.texture as PIXI.Texture;
             PixelArtTom = resources[PixelArtTomPath]?.texture as PIXI.Texture;
             RandomSymbols = resources[RandomSymbolsPath]?.texture as PIXI.Texture;
+            SingingTom = resources[SingingTomPath]?.texture as PIXI.Texture;
             SmallTom = resources[SmallTomPath]?.texture as PIXI.Texture;
             SpinButton = resources[SpinButtonPath]?.texture as PIXI.Texture;
             Stars = resources[StarsPath]?.texture as PIXI.Texture;

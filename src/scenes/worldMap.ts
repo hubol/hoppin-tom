@@ -8,6 +8,7 @@ import {playMusicAsync} from "../playMusic";
 import {Overworld} from "../musics";
 import {casino} from "./casino";
 import {arena} from "./arena";
+import {theater} from "./theater";
 
 export async function worldMap()
 {
@@ -29,6 +30,7 @@ export async function worldMap()
 
     makePortal(woodedAreas[0], tom, casino);
     makePortal(woodedAreas[1], tom, arena);
+    makePortal(woodedAreas[2], tom, theater);
 
     woodedAreas.forEach(x => container.addChild(x));
     // tom.filters = [dropShadowFilter];

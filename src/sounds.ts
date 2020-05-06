@@ -27,6 +27,11 @@ export const GoblimWarp = new Howl({
     
 });
 
+export const Sing = new Howl({
+    src: [require("./sound/sing.ogg"), require("./sound/sing.mp3")],
+    
+});
+
 export const SpinPress = new Howl({
     src: [require("./sound/spin press.ogg"), require("./sound/spin press.mp3")],
     
