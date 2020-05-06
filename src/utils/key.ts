@@ -36,7 +36,10 @@ let workingKeysState: KeysState = { };
 
 function handleKeyDown(event: KeyboardEvent)
 {
-    workingKeysState[event.code] = (workingKeysState[event.code] ?? 0) | 0b110;
+    workingKeysState[event.code] = workingKeysState[event.code] ?? 0;
+    if ((workingKeysState[event.code] & 0b010) === 0b000)
+        workingKeysState[event.code] |= 0b100;
+    workingKeysState[event.code] |= 0b010;
 }
 
 function handleKeyUp(event: KeyboardEvent)
