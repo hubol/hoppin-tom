@@ -13,6 +13,8 @@ export let MagicLetters: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MapWoodedArea: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let PileBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let PileTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let PixelArtTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let RandomSymbols: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SingingTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
@@ -60,6 +62,12 @@ export function loadTexturesAsync()
     const MapWoodedAreaPath = require("./images/map wooded area.png");
     loader.add(MapWoodedAreaPath); 
 
+    const PileBackgroundPath = require("./images/pile background.png");
+    loader.add(PileBackgroundPath); 
+
+    const PileTomPath = require("./images/pile tom.png");
+    loader.add(PileTomPath); 
+
     const PixelArtTomPath = require("./images/pixel art tom.png");
     loader.add(PixelArtTomPath); 
 
@@ -99,6 +107,8 @@ export function loadTexturesAsync()
             MapBackground = resources[MapBackgroundPath]?.texture as PIXI.Texture;
             MapTom = resources[MapTomPath]?.texture as PIXI.Texture;
             MapWoodedArea = resources[MapWoodedAreaPath]?.texture as PIXI.Texture;
+            PileBackground = resources[PileBackgroundPath]?.texture as PIXI.Texture;
+            PileTom = resources[PileTomPath]?.texture as PIXI.Texture;
             PixelArtTom = resources[PixelArtTomPath]?.texture as PIXI.Texture;
             RandomSymbols = resources[RandomSymbolsPath]?.texture as PIXI.Texture;
             SingingTom = resources[SingingTomPath]?.texture as PIXI.Texture;
