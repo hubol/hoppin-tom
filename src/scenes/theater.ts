@@ -4,12 +4,16 @@ import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
 import {game} from "../tom/game";
 import {subimageTextures} from "../utils/simpleSpritesheet";
-import {SingingTom} from "../textures";
+import {AudienceElf, AudienceElf2, SingingTom} from "../textures";
 import {stopMusic} from "../playMusic";
 import {createTextbox, Speaker} from "../gameObjects/textbox";
 import {sleep} from "../utils/sleep";
 import {worldMap} from "./worldMap";
 import {merge} from "../utils/merge";
+import {getCurrentTime, getCurrentTimeMilliseconds} from "../utils/time";
+import {Vector} from "../utils/vector";
+import {wait} from "../utils/wait";
+import {GlowFilter} from "@pixi/filter-glow";
 
 let tom: Tom;
 
@@ -34,7 +38,35 @@ async function askForSong()
 {
     const textbox = createTextbox(game.stage);
 
+    await sleep(500);
+    const elf = createElf(0).at(32, game.height - 20);
+    await waitUntilStopped(elf);
+    textbox.speaker = elf;
+
+    await textbox.say("Hoppin Tom, I need to hear your beautiful voice");
+    tom.canSing = true;
+    song.reset();
+
+    await wait(() => song.isBeautiful);
+    await textbox.say("Your amazing");
+
+    await sleep(500);
+
+
     textbox.destroy();
+}
+
+async function waitUntilStopped(vector: Vector)
+{
+    const previousPosition = { ...vector };
+    await wait(() => {
+       if (vector.x === previousPosition.x && vector.y === previousPosition.y)
+           return true;
+
+       previousPosition.x = vector.x;
+       previousPosition.y = vector.y;
+       return false;
+    });
 }
 
 async function askForEncore()
@@ -64,9 +96,54 @@ const rates =
 
 const singingTomTextures = subimageTextures(SingingTom, 2);
 
+let numberOfNotes: number | null = null;
+let firstNoteTimeMilliseconds: number | null = null;
+
+const song = {
+    reset()
+    {
+        numberOfNotes = null;
+        firstNoteTimeMilliseconds = null;
+    },
+
+    onNotePlayed()
+    {
+        if (numberOfNotes === null)
+        {
+            numberOfNotes = 0;
+            firstNoteTimeMilliseconds = getCurrentTimeMilliseconds();
+        }
+
+        numberOfNotes++;
+    },
+
+    get timeSinceFirstNoteMilliseconds()
+    {
+        if (!firstNoteTimeMilliseconds)
+            return null;
+        return getCurrentTimeMilliseconds() - firstNoteTimeMilliseconds;
+    },
+
+    get beautyFactor()
+    {
+        if (!this.timeSinceFirstNoteMilliseconds || !numberOfNotes)
+            return 0;
+
+        return (Math.min(this.timeSinceFirstNoteMilliseconds / 10000, 1)
+            + Math.min(numberOfNotes / 32, 1)) / 2;
+    },
+
+    get isBeautiful()
+    {
+        return this.beautyFactor >= 1;
+    }
+};
+
 interface TomProps
 {
     canSing: boolean;
+    glowFilter: GlowFilter;
+    encore: boolean;
 }
 
 type Tom = Sprite & TomProps & Speaker;
@@ -80,8 +157,16 @@ function makeTom(): Tom
     let offy = 0;
 
     let canSing = false;
+    let prevFreq;
+    let encore = false;
 
+    const glowFilter = new GlowFilter({ distance: 16 });
+
+    let i = 0;
     const sprite = Sprite.from(singingTomTextures[0]).withStep(() => {
+        i += 0.2;
+        glowFilter.innerStrength = song.beautyFactor * (Math.abs(Math.cos(i) * .6) + .4);
+        glowFilter.outerStrength = song.beautyFactor * (Math.abs(Math.cos(i) * .6) + .4);
         let freq: number | null = null;
 
         if (canSing)
@@ -97,8 +182,13 @@ function makeTom(): Tom
         }
 
         if (freq) {
+            if (freq !== prevFreq)
+                song.onNotePlayed();
+
             sprite.texture = singingTomTextures[1];
-            const rate = rates[Math.min(freq as number - 1, rates.length - 1)];
+            let rate = rates[Math.min(freq as number - 1, rates.length - 1)];
+            if (encore)
+                rate += 1;
             if (Sing.volume() === 0)
                 Sing.rate(rate);
             else
@@ -119,12 +209,15 @@ function makeTom(): Tom
             sprite.texture = singingTomTextures[0];
         }
 
+        prevFreq = freq;
+
         Sing.volume(approachLinear(Sing.volume(), !freq ? 0 : 1, 0.2));
     })
         .on("removed", () => Sing.stop())
         .on("added", () => Sing.play())
         .at(game.width / 2, game.height / 2 - 10);
 
+    sprite.filters = [glowFilter];
     sprite.anchor.set(.5, .5);
 
     return merge(sprite, {
@@ -132,6 +225,24 @@ function makeTom(): Tom
             canSing = v;
             console.log(canSing);
         },
-        voice: TomSpeak
+        voice: TomSpeak,
+        glowFilter,
+        set encore(v) {
+            encore = v;
+        }
     });
+}
+
+function createElf(style: 0 | 1)
+{
+    const sprite = new Sprite(style === 0 ? AudienceElf : AudienceElf2);
+    let i = 0;
+    const sprite1 = sprite
+        .withStep(() => {
+            if (i++ < 16)
+                sprite.y -= 1;
+        });
+    game.stage.addChild(sprite1);
+
+    return sprite1;
 }
