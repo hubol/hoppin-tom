@@ -8,6 +8,7 @@ import {hud, Hud} from "./hud";
 import {congrats} from "../scenes/congrats";
 import {arena} from "../scenes/arena";
 import {advanceKeyListener, startKeyListener} from "../utils/key";
+import {theater} from "../scenes/theater";
 
 export let game: Game;
 
@@ -15,8 +16,9 @@ export function startGame()
 {
     game = createGame();
     game.goto(theStory, { escapeTicker: false });
-    game.hud.addL();
-    game.hud.addL();
+    // game.goto(theater, { escapeTicker: false });
+    // game.hud.addL();
+    // game.hud.addL();
     // game.hud.addI();
     game.hud.addO();
     // game.goto(congrats, { escapeTicker: false });

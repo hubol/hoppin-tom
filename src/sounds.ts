@@ -2,6 +2,16 @@ import { Howl } from 'howler';
     
 // This file is generated. Do not touch.
 
+export const Elf1Speak = new Howl({
+    src: [require("./sound/elf1 speak.ogg"), require("./sound/elf1 speak.mp3")],
+    
+});
+
+export const Elf2Speak = new Howl({
+    src: [require("./sound/elf2 speak.ogg"), require("./sound/elf2 speak.mp3")],
+    
+});
+
 export const GoblimBounce = new Howl({
     src: [require("./sound/goblim bounce.ogg"), require("./sound/goblim bounce.mp3")],
     

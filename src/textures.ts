@@ -19,6 +19,7 @@ export let SingingTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SmallTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let SpinButton: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let Stars: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let TheaterBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let WillowTree: PIXI.Texture = undefined as unknown as PIXI.Texture;
 
 
@@ -77,6 +78,9 @@ export function loadTexturesAsync()
     const StarsPath = require("./images/stars.png");
     loader.add(StarsPath); 
 
+    const TheaterBackgroundPath = require("./images/theater background.png");
+    loader.add(TheaterBackgroundPath); 
+
     const WillowTreePath = require("./images/willow tree.png");
     loader.add(WillowTreePath); 
 
@@ -101,6 +105,7 @@ export function loadTexturesAsync()
             SmallTom = resources[SmallTomPath]?.texture as PIXI.Texture;
             SpinButton = resources[SpinButtonPath]?.texture as PIXI.Texture;
             Stars = resources[StarsPath]?.texture as PIXI.Texture;
+            TheaterBackground = resources[TheaterBackgroundPath]?.texture as PIXI.Texture;
             WillowTree = resources[WillowTreePath]?.texture as PIXI.Texture;
 
             resolve();

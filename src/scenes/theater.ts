@@ -1,19 +1,21 @@
 import { Sprite } from "pixi.js";
-import {Sing, TomSpeak} from "../sounds";
+import {Elf1Speak, Elf2Speak, Sing, TomSpeak} from "../sounds";
 import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
 import {game} from "../tom/game";
 import {subimageTextures} from "../utils/simpleSpritesheet";
-import {AudienceElf, AudienceElf2, SingingTom} from "../textures";
+import {AudienceElf, AudienceElf2, SingingTom, TheaterBackground} from "../textures";
 import {stopMusic} from "../playMusic";
 import {createTextbox, Speaker} from "../gameObjects/textbox";
 import {sleep} from "../utils/sleep";
 import {worldMap} from "./worldMap";
 import {merge} from "../utils/merge";
-import {getCurrentTime, getCurrentTimeMilliseconds} from "../utils/time";
+import {getCurrentTimeMilliseconds} from "../utils/time";
 import {Vector} from "../utils/vector";
 import {wait} from "../utils/wait";
 import {GlowFilter} from "@pixi/filter-glow";
+import {magicLetter} from "../tom/hud";
+import {EscapeTickerAndExecute} from "../utils/iguaTicker";
 
 let tom: Tom;
 
@@ -23,13 +25,13 @@ export function theater()
 
     tom = makeTom();
 
-    game.stage.addChild(tom);
+    game.stage.addChild(Sprite.from(TheaterBackground), tom);
 
     const ownedLs = game.hud.ownedLs();
     if (ownedLs === 0)
         askForSong();
     else if (ownedLs === 1)
-        askForEncore();
+        askForEncore(); // unreachable (hopefully)
     else
         sayNothingToDo();
 }
@@ -52,8 +54,40 @@ async function askForSong()
 
     await sleep(500);
 
+    if (await awardL())
+        return; // unreachable (hopefully)
 
     textbox.destroy();
+
+    await askForEncore();
+}
+
+async function awardL()
+{
+    const letter = magicLetter(game.width, game.height / 2 - 20, "l")
+        .withStep(() => letter.x -= 2);
+
+    game.stage.addChild(letter);
+
+    await wait(() => Math.abs(letter.x - tom.x) < 8 || letter.x < game.width * .25);
+
+    try
+    {
+        game.hud.addL();
+    }
+    catch (e)
+    {
+        if (e instanceof EscapeTickerAndExecute)
+        {
+            e.execute();
+            return true;
+        }
+
+        throw e;
+    }
+
+    letter.destroy();
+    return false;
 }
 
 async function waitUntilStopped(vector: Vector)
@@ -71,9 +105,38 @@ async function waitUntilStopped(vector: Vector)
 
 async function askForEncore()
 {
+    tom.canSing = false;
+
     const textbox = createTextbox(game.stage);
 
-    textbox.destroy();
+    await sleep(500);
+    const elf = createElf(1).at(64, game.height - 20);
+    await waitUntilStopped(elf);
+    textbox.speaker = elf;
+
+    await textbox.say("OMG, I heard your singing!!!");
+    await textbox.say("Hoppin Tom, mama needs an encore!!!");
+
+    tom.canSing = true;
+    tom.encore = true;
+    song.reset();
+
+    await wait(() => song.isBeautiful);
+    await textbox.say("Tom... What can I say...");
+    await textbox.say("That ***** ***** rocked !!!!");
+
+    await sleep(500);
+
+    if (await awardL())
+        return;
+
+    await sleep(500);
+
+    textbox.speaker = tom;
+    await textbox.say("Im leaving now");
+
+    await sleep(250);
+    game.goto(worldMap, { escapeTicker: false });
 }
 
 async function sayNothingToDo()
@@ -243,6 +306,8 @@ function createElf(style: 0 | 1)
                 sprite.y -= 1;
         });
     game.stage.addChild(sprite1);
+
+    (sprite1 as any).voice = style === 0 ? Elf1Speak : Elf2Speak;
 
     return sprite1;
 }
