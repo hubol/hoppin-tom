@@ -7,6 +7,7 @@ export let AudienceElf2: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let AudienceElf: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let CasinoBackground: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let CasinoExitSign: PIXI.Texture = undefined as unknown as PIXI.Texture;
+export let Checkpoint: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let Goblim: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let HdTom: PIXI.Texture = undefined as unknown as PIXI.Texture;
 export let MagicLetters: PIXI.Texture = undefined as unknown as PIXI.Texture;
@@ -43,6 +44,9 @@ export function loadTexturesAsync()
 
     const CasinoExitSignPath = require("./images/casino exit sign.png");
     loader.add(CasinoExitSignPath); 
+
+    const CheckpointPath = require("./images/checkpoint.png");
+    loader.add(CheckpointPath); 
 
     const GoblimPath = require("./images/goblim.png");
     loader.add(GoblimPath); 
@@ -101,6 +105,7 @@ export function loadTexturesAsync()
             AudienceElf = resources[AudienceElfPath]?.texture as PIXI.Texture;
             CasinoBackground = resources[CasinoBackgroundPath]?.texture as PIXI.Texture;
             CasinoExitSign = resources[CasinoExitSignPath]?.texture as PIXI.Texture;
+            Checkpoint = resources[CheckpointPath]?.texture as PIXI.Texture;
             Goblim = resources[GoblimPath]?.texture as PIXI.Texture;
             HdTom = resources[HdTomPath]?.texture as PIXI.Texture;
             MagicLetters = resources[MagicLettersPath]?.texture as PIXI.Texture;

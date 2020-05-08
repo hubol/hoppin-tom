@@ -12,6 +12,7 @@ export interface Hud
     addL();
     addO();
     hasI(): boolean;
+    hasO(): boolean;
     ownedLs(): 0 | 1 | 2;
 }
 
@@ -65,6 +66,7 @@ export function hud()
     const container = new Container() as Container & Hud;
 
     container.hasI = () => i.visible;
+    container.hasO = () => o.visible;
 
     container.addW = () => {
         if (w1.visible)

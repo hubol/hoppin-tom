@@ -1,12 +1,14 @@
-import { DisplayObject, Sprite } from "pixi.js";
+import { DisplayObject, Sprite, Container, Graphics } from "pixi.js";
 import {subimageTextures} from "../utils/simpleSpritesheet";
-import {PileBackground, PileTom} from "../textures";
+import {Checkpoint, PileBackground, PileTom} from "../textures";
 import {Key} from "../utils/key";
 import {game} from "../tom/game";
 import {toRad} from "../utils/math";
-import {len, normalize, scale, Vector} from "../utils/vector";
+import {add, distance, len, normalize, scale, set, sub, vector, Vector} from "../utils/vector";
 import {merge} from "../utils/merge";
 import {stopMusic} from "../playMusic";
+import {magicLetter} from "../tom/hud";
+import {worldMap} from "./worldMap";
 
 let tom: Tom;
 let bottom: number;
@@ -17,6 +19,22 @@ export function pile()
     bottom = game.height - 20;
     tom = createTom().at(8, 8);
     game.stage.addChild(Sprite.from(PileBackground), tom);
+
+    if (!game.hud.hasO())
+    {
+        const evilBall = createEvilBall().at(game.width / 2, bottom / 2);
+        game.stage.addChild(evilBall);
+    }
+    else
+    {
+        const exit = Sprite.from(Checkpoint).withStep(() => {
+            if (tom.collides(exit))
+                game.goto(worldMap);
+        }).at(game.width / 2, bottom / 2);
+
+        exit.anchor.set(0.5, 0.5);
+        game.stage.addChild(exit);
+    }
 }
 
 const pileTomTextures = subimageTextures(PileTom, 2);
@@ -83,3 +101,83 @@ interface TomProps
 }
 
 type Tom = DisplayObject & TomProps;
+
+function createEvilBall()
+{
+    let life = 100;
+
+    function getRadius()
+    {
+        return Math.max(0, life / 100 * 32);
+    }
+
+    function getPlayerAffectedRadius()
+    {
+        return getRadius() + 5;
+    }
+
+    function isMagicLetterExposed()
+    {
+        return getRadius() < 8.5;
+    }
+
+    const evilBall = new Container();
+
+    const graphics = new Graphics();
+    graphics.withStep(() => {
+        graphics.clear();
+
+        if (isMagicLetterExposed())
+            return;
+
+        const r = Math.max(9, getRadius());
+        graphics.beginFill(0xCEE4FF);
+        graphics.drawEllipse(0, 0, r, r);
+        graphics.endFill();
+    });
+
+    const letter = magicLetter(0, 0, "o");
+    letter.anchor.set(0.5, 0.5);
+
+    evilBall.addChild(graphics, letter);
+
+    evilBall.withStep(() => {
+        const offset = sub(vector(tom), evilBall);
+        if (len(offset) >= getPlayerAffectedRadius())
+            return;
+
+        if (isMagicLetterExposed())
+        {
+            game.hud.addO();
+            evilBall.destroy();
+            goBackToWorldMap();
+        }
+
+        const normalizedOffset = normalize(offset);
+        add(set(tom, evilBall), normalizedOffset, getPlayerAffectedRadius());
+
+        const tomVelocity = len(tom.speed);
+        life -= tomVelocity;
+        set(tom.speed, scale(normalizedOffset, (tomVelocity * 2 + 5)));
+    });
+
+    return evilBall;
+}
+
+async function goBackToWorldMap()
+{
+    await shrink(tom);
+    game.goto(worldMap, { escapeTicker: false });
+}
+
+function shrink(displayObject: DisplayObject)
+{
+    return new Promise<void>(resolve => {
+        game.stage.addChild(new DisplayObject().withStep(() => {
+            displayObject.scale.x *= 0.95;
+            displayObject.scale.y *= 0.95;
+            if (Math.abs(displayObject.scale.x) < 0.01 || Math.abs(displayObject.scale.y) < 0.01)
+                resolve();
+        }));
+    });
+}

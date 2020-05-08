@@ -4,6 +4,11 @@ export interface Vector
     y: number;
 }
 
+export function vector(vec: Vector): Vector
+{
+    return { x: vec.x, y: vec.y };
+}
+
 export function perpendicular(vec: Vector) {
     const tmp = vec.x;
     vec.x = vec.y;
@@ -17,6 +22,27 @@ export function dot(vec1: Vector, vec2: Vector) {
 
 export function distance(vec1: Vector, vec2: Vector) {
     return Math.sqrt(Math.pow(vec1.x - vec2.x, 2) + Math.pow(vec1.y - vec2.y, 2));
+}
+
+export function set(vec1: Vector, vec2: Vector)
+{
+    vec1.x = vec2.x;
+    vec1.y = vec2.y;
+    return vec1;
+}
+
+export function add(vec1: Vector, vec2: Vector, m: number = 1)
+{
+    vec1.x += vec2.x * m;
+    vec1.y += vec2.y * m;
+    return vec1;
+}
+
+export function sub(vec1: Vector, vec2: Vector)
+{
+    vec1.x -= vec2.x;
+    vec1.y -= vec2.y;
+    return vec1;
 }
 
 export function len(vec: Vector)
