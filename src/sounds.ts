@@ -2,6 +2,16 @@ import { Howl } from 'howler';
     
 // This file is generated. Do not touch.
 
+export const CloseTextbox = new Howl({
+    src: [require("./sound/close textbox.ogg"), require("./sound/close textbox.mp3")],
+    
+});
+
+export const Collect = new Howl({
+    src: [require("./sound/collect.ogg"), require("./sound/collect.mp3")],
+    
+});
+
 export const Elf1Speak = new Howl({
     src: [require("./sound/elf1 speak.ogg"), require("./sound/elf1 speak.mp3")],
     
@@ -9,6 +19,16 @@ export const Elf1Speak = new Howl({
 
 export const Elf2Speak = new Howl({
     src: [require("./sound/elf2 speak.ogg"), require("./sound/elf2 speak.mp3")],
+    
+});
+
+export const Engine = new Howl({
+    src: [require("./sound/engine.ogg"), require("./sound/engine.mp3")],
+    
+});
+
+export const EvilBallHurt = new Howl({
+    src: [require("./sound/evil ball hurt.ogg"), require("./sound/evil ball hurt.mp3")],
     
 });
 
@@ -49,6 +69,11 @@ export const SpinPress = new Howl({
 
 export const SpinRelease = new Howl({
     src: [require("./sound/spin release.ogg"), require("./sound/spin release.mp3")],
+    
+});
+
+export const Teleport = new Howl({
+    src: [require("./sound/teleport.ogg"), require("./sound/teleport.mp3")],
     
 });
 

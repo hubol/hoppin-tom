@@ -3,12 +3,13 @@ import {subimageTextures} from "../utils/simpleSpritesheet";
 import {Checkpoint, PileBackground, PileTom} from "../textures";
 import {Key} from "../utils/key";
 import {game} from "../tom/game";
-import {toRad} from "../utils/math";
+import {approachLinear, toRad} from "../utils/math";
 import {add, distance, len, normalize, scale, set, sub, vector, Vector} from "../utils/vector";
 import {merge} from "../utils/merge";
 import {stopMusic} from "../playMusic";
 import {magicLetter} from "../tom/hud";
 import {worldMap} from "./worldMap";
+import {EvilBallHurt, Engine, GoblimBounce} from "../sounds";
 
 let tom: Tom;
 let bottom: number;
@@ -41,6 +42,11 @@ const pileTomTextures = subimageTextures(PileTom, 2);
 
 function createTom(): Tom
 {
+    Engine.loop(true);
+    Engine.volume(0);
+    Engine.rate(0.5);
+    Engine.play();
+
     const sprite = Sprite.from(pileTomTextures[0]);
     sprite.anchor.set(0.5, 0.5);
     const deltaAngle = 4;
@@ -65,6 +71,10 @@ function createTom(): Tom
         if (len(speed) > 5)
             scale(normalize(speed), 5);
 
+        const velocity = len(speed);
+        Engine.volume(approachLinear(Engine.volume(), velocity / 5, 0.2));
+        Engine.rate(approachLinear(Engine.rate(), 1 + (velocity / 5) * 1, 0.2));
+
         sprite.x += speed.x;
         sprite.y += speed.y;
 
@@ -74,23 +84,29 @@ function createTom(): Tom
         {
             sprite.x = 0;
             speed.x *= -bounceFactor;
+            GoblimBounce.play();
         }
         if (sprite.y < 0)
         {
             sprite.y = 0;
             speed.y *= -bounceFactor;
+            GoblimBounce.play();
         }
         if (sprite.x > game.width)
         {
             sprite.x = game.width;
             speed.x *= -bounceFactor;
+            GoblimBounce.play();
         }
         if (sprite.y > bottom)
         {
             sprite.y = bottom;
             speed.y *= -bounceFactor;
+            GoblimBounce.play();
         }
     });
+
+    sprite.on("removed", () => Engine.stop());
 
     return merge(sprite, { speed });
 }
@@ -152,6 +168,9 @@ function createEvilBall()
             evilBall.destroy();
             goBackToWorldMap();
         }
+
+        EvilBallHurt.rate(.5 + life / 200);
+        EvilBallHurt.play();
 
         const normalizedOffset = normalize(offset);
         add(set(tom, evilBall), normalizedOffset, getPlayerAffectedRadius());

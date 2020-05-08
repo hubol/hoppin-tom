@@ -1,4 +1,4 @@
-import { Sprite } from "pixi.js";
+import { Sprite, DisplayObject } from "pixi.js";
 import {Elf1Speak, Elf2Speak, Sing, TomSpeak} from "../sounds";
 import {Key} from "../utils/key";
 import {approachLinear} from "../utils/math";
@@ -79,7 +79,7 @@ async function awardL()
     {
         if (e instanceof EscapeTickerAndExecute)
         {
-            e.execute();
+            game.stage.addChild(new DisplayObject().withStep(() => { throw e; }));
             return true;
         }
 
@@ -286,7 +286,6 @@ function makeTom(): Tom
     return merge(sprite, {
         set canSing(v: boolean) {
             canSing = v;
-            console.log(canSing);
         },
         voice: TomSpeak,
         glowFilter,

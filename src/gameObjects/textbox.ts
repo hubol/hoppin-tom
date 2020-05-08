@@ -3,6 +3,7 @@ import {game} from "../tom/game";
 import {SansSerifFont} from "../fonts";
 import {Key, KeyCode} from "../utils/key";
 import {wait} from "../utils/wait";
+import {CloseTextbox} from "../sounds";
 
 export interface Speaker {
     voice: Howl;
@@ -81,6 +82,7 @@ export function createTextbox(stage?: Container): Textbox
             if (speaker && "voice" in speaker)
                 speaker.voice.play();
             await waitForKey("Space");
+            CloseTextbox.play();
             container.visible = false;
         },
         get displayObject() {
