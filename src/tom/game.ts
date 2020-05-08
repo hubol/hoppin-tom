@@ -9,6 +9,7 @@ import {congrats} from "../scenes/congrats";
 import {arena} from "../scenes/arena";
 import {advanceKeyListener, startKeyListener} from "../utils/key";
 import {theater} from "../scenes/theater";
+import {pile} from "../scenes/pile";
 
 export let game: Game;
 
@@ -16,11 +17,12 @@ export function startGame()
 {
     game = createGame();
     game.goto(theStory, { escapeTicker: false });
+    // game.goto(pile, { escapeTicker: false });
     // game.goto(theater, { escapeTicker: false });
     // game.hud.addL();
     // game.hud.addL();
     // game.hud.addI();
-    game.hud.addO();
+    // game.hud.addO();
     // game.goto(congrats, { escapeTicker: false });
     // game.goto(arena, { escapeTicker: false });
     // game.goto(worldMap, { escapeTicker: false });
