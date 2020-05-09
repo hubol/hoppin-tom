@@ -7,6 +7,11 @@ export const Congratulations = new Howl({
     preload: false
 });
 
+export const EvilBallSong = new Howl({
+    src: [require("./music/evil ball song.ogg"), require("./music/evil ball song.mp3")],
+    preload: false
+});
+
 export const Intro = new Howl({
     src: [require("./music/intro.ogg"), require("./music/intro.mp3")],
     preload: false
@@ -14,6 +19,11 @@ export const Intro = new Howl({
 
 export const Overworld = new Howl({
     src: [require("./music/overworld.ogg"), require("./music/overworld.mp3")],
+    preload: false
+});
+
+export const Theatere = new Howl({
+    src: [require("./music/theatere.ogg"), require("./music/theatere.mp3")],
     preload: false
 });
 

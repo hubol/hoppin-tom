@@ -5,7 +5,7 @@ import {approachLinear} from "../utils/math";
 import {game} from "../tom/game";
 import {subimageTextures} from "../utils/simpleSpritesheet";
 import {AudienceElf, AudienceElf2, SingingTom, TheaterBackground} from "../textures";
-import {stopMusic} from "../playMusic";
+import {playMusicAsync, stopMusic} from "../playMusic";
 import {createTextbox, Speaker} from "../gameObjects/textbox";
 import {sleep} from "../utils/sleep";
 import {worldMap} from "./worldMap";
@@ -16,12 +16,13 @@ import {wait} from "../utils/wait";
 import {GlowFilter} from "@pixi/filter-glow";
 import {magicLetter} from "../tom/hud";
 import {EscapeTickerAndExecute} from "../utils/iguaTicker";
+import {Theatere} from "../musics";
 
 let tom: Tom;
 
-export function theater()
+export async function theater()
 {
-    stopMusic();
+    await playMusicAsync(Theatere);
 
     tom = makeTom();
 

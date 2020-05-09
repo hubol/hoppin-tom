@@ -6,17 +6,18 @@ import {game} from "../tom/game";
 import {approachLinear, toRad} from "../utils/math";
 import {add, distance, len, normalize, scale, set, sub, vector, Vector} from "../utils/vector";
 import {merge} from "../utils/merge";
-import {stopMusic} from "../playMusic";
+import {playMusicAsync, stopMusic} from "../playMusic";
 import {magicLetter} from "../tom/hud";
 import {worldMap} from "./worldMap";
 import {EvilBallHurt, Engine, GoblimBounce} from "../sounds";
+import {EvilBallSong} from "../musics";
 
 let tom: Tom;
 let bottom: number;
 
-export function pile()
+export async function pile()
 {
-    stopMusic();
+    await playMusicAsync(EvilBallSong);
     bottom = game.height - 20;
     tom = createTom().at(8, 8);
     game.stage.addChild(Sprite.from(PileBackground), tom);

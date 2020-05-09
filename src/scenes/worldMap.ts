@@ -10,6 +10,7 @@ import {casino} from "./casino";
 import {arena} from "./arena";
 import {theater} from "./theater";
 import {pile} from "./pile";
+import {add, distance, vector} from "../utils/vector";
 
 export async function worldMap()
 {
@@ -44,7 +45,7 @@ export async function worldMap()
 function makePortal(displayObject: DisplayObject, tom: DisplayObject, scene: Scene)
 {
     displayObject.withStep(() => {
-        if (displayObject.collides(tom))
+        if (distance(add(vector(displayObject), { x: 12, y: 24 }), tom) < 12)
             game.goto(scene);
     });
 }
